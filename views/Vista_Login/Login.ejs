@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+
+<script>
+
+window.addEventListener('pageshow',function(event){
+
+if(event.persisted){
+
+    location.reload();
+}
+
+
+});
+
+
+</script>
+
+
+<% if(mensaje) { %>
+
+<label for=""><%=mensaje %></label>
+
+<%  } %>
+
+<script src="/javascripts/Componentes.js"></script>
+
+
+
+        <form action="/" method="post">
+
+        <h1> INICIO DE CESIÓN BANCO MULTITODO </h1> <br>
+        <img src="../recursos/img/logo.jpeg" alt="logo.php"> <br>
+
+        <label for="">USUARIO:</label> <br>
+        <input type="text" name="txt_usu" id="txt_us"> <br>
+
+        <label for="">Contraseña:</label> <br>
+        <input type="password" name="txt_cla" id="txt_cl"> <button type="button" id="btn_mostrar" onclick="Mostrar(document.getElementById('txt_cl'),document.getElementById('btn_mostrar'))">Mostrar</button> <br>
+
+        <br>
+
+        <input type="submit" name="btn_logear" id="btn_log" value="INICIAR CESIÓN"> 
+
+        <br>
+        <br>
+
+        ¿No te has registrado aun? <a href="">regitrate aquí</a> 
+
+
+        </form>
+
+
+
+</body>
+</html>

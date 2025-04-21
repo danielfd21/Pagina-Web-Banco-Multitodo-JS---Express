@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+
+    
+    <script>
+
+
+    window.addEventListener('pageshow',function(event){
+
+        if(event.persisted){
+
+            location.reload();
+        }
+
+    });
+
+
+
+    </script>
+
+
+    <form action="/transaccion/confirmar_transferencia" method="post">
+    <h1>  Confirmar Transferencia Bancaria  </h1>
+
+
+    <label for="">DESDE: </label> <br> <br>
+
+    <ul style="list-style: none; border: solid 2px blue; width: 1000px;">
+
+    <li> Cuenta:  <%= cue_dep  %>   </li>
+    <li> Saldo: <%= saldo  %>  </li>
+
+    </ul>
+
+
+
+    <br> <br>
+
+
+    <label for="" style="display: flex; justify-content: center;"> Cantidad: <%= cantidad  %>   $ </label>
+
+
+    <br> <br>
+
+    <label for=""><strong>PARA: </strong></label> <br> <br>
+
+
+    <ul style="list-style: none; border: solid 2px blue; width: 1000px;">
+
+    <li> Cuenta:  <%= cue_ben  %>  </li>
+    <li> Nombres:  <%= nom_ben  %>  </li>
+
+    </ul>
+
+    <br>
+    <br>
+
+    <input type="submit" name="btn_confirmar_transferencia" id="btn_con_tra" value="Confirmar Transferencia"> 
+
+    </form>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1> Trasnferencia Bancaria  </h1> <br><br>
+
+
+    <script>
+
+
+    window.addEventListener('pageshow',function(event){
+
+        if(event.persisted){
+
+            location.reload();
+
+        }
+
+
+    });
+
+    
+    </script>
+
+
+
+
+    <% if(mensaje){ %>
+
+        <label for=""><%= mensaje  %></label>
+
+    <% } %>
+
+    <form action="/transaccion" id="formulario_transaccion" method="post">
+        
+    <ul id="lista_datos"   style="list-style:  none; border: solid 2px blue; width: 1000px;">
+
+     <%- include('../Partials/Cliente_li',{cliente:cliente}); %>
+
+    <li> Cuenta: <select name="cb_cuenta"  onchange="Insertar_Saldo()" id="cb_cuenta">   <option value="SELECCIONE" >SELECCIONE</option><% cuentas.forEach(  cu=>{   %>  <option value="<%= cu.Numero_cuenta %>"> <%= cu.Numero_cuenta %></option><%  }); %> </select><label for="" id="lb_saldo"></label> </li>
+      
+    </ul>
+
+    <br>
+    <br>
+
+   
+
+   
+
+    <br>
+
+    
+    <ul  style="list-style: none; border: solid 2px blue; width: 1000px;">
+
+                 
+                 <li> Numero de cuenta del beneficiario: <input type="number" name="txt_cuenta_beneficiario" id="txt_ben"> </li> 
+                 <li>Nombre del beneficiario:<input type="text" name="txt_nombre_beneficiario" id="txt_nom"> </li>
+                <li> Cantidad a depositar: <input type="number" name="txt_cantidad_deposito" id="txt_cant_dep" step="any">  </li>
+    
+   
+    </ul>
+
+
+        <br>
+
+
+    <input type="submit" name="btn_transferir" id="btn_tra" value="Continuar">
+
+    
+
+
+    <script>
+
+
+
+        function Resetear_Cb_Cuenta_click(){
+
+            const selectCuenta = document.getElementById('cb_cuen');
+      
+             if (selectCuenta.value === "SELECCIONE") {
+
+                selectCuenta.value = "";
+            }
+         
+           
+        }
+
+
+        function Resetear_Cb_Cuenta_changue(){
+
+            document.getElementById('formulario_transaccion').submit();
+        }
+
+
+        async function Insertar_Saldo(){
+
+            const cuenta_seleccionada = document.getElementById('cb_cuenta').value;
+            const label_saldo = document.getElementById('lb_saldo');
+
+            if(cuenta_seleccionada === "SELECCIONE"){
+
+                label_saldo.innerHTML = "";
+
+            }else{
+
+                try{
+
+                    const response = await fetch('/transaccion/saldo_cuenta',{
+
+
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({cuenta:cuenta_seleccionada})
+
+                    });
+
+                    const data = await response.json();
+
+                    if(data.exito){
+
+                        label_saldo.innerHTML = data.saldo;
+                    }
+
+
+                }catch(err){
+
+                    console.log("error en el fetch:" + err);
+                }
+            }
+
+
+        }
+      
+
+
+
+
+      </script>
+
+
+   
+   
+   </form>
+
+   
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/ImprimirComprobante.css">
+    <title>Document</title>
+</head>
+<body>
+
+<h1><label for="">RECIBO DE TRANSACCIÓN</label></h1>
+
+
+<ul  id="lis_recibo_transaccion" style="border: 2px solid green; list-style: none;">
+            
+
+
+
+
+
+        <% filtro_cliente.forEach( c =>  {  %>            
+                
+                
+                
+         
+                <li><strong>Fecha:</strong> &nbsp;&nbsp;&nbsp; <%= c.fecha  %> </li>
+                 <li><strong>Hora:</strong> &nbsp;&nbsp;&nbsp;  <%= c.hora  %>  </li>
+                 <li><strong>Cantidad: </strong> &nbsp;&nbsp;&nbsp; <%= c.cantidad  %>  $</li>
+                 <li><strong>Nombre del depositante:</strong> &nbsp;&nbsp;&nbsp; <%= c.remitente  %>  </li>
+                 <li><strong>Cuenta del depositante:</strong> &nbsp;&nbsp;&nbsp; <%= c.cue_rem  %>  </li>
+                 <li><strong>Nombre del bneficiario:</strong> &nbsp;&nbsp;&nbsp; <%= c.beneficiario  %>  </li> 
+                 <li><strong>Cuenta del beneficiario:</strong> &nbsp;&nbsp;&nbsp; <%= c.cue_ben  %>  </td>
+                 <li><strong>Saldo restante:  </strong>&nbsp;&nbsp;&nbsp;<%= saldo  %></li>
+                    
+                
+
+        <% });  %>      
+
+                </ul>
+
+                <button id="btn_imp_com" type="button" onclick="window.print()">IMPRIMIR</button>
+        
+</body>
+</html>

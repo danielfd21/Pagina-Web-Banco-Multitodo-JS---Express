@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+
+
+<body>
+    <form action="/estado" method="POST">
+        
+        
+    
+        <h1>  <label for=""> ESTADO DE CUENTA </label> </h1>
+
+        <ul style="list-style: none; border: 2px solid red; width: 60%;">
+
+        
+
+            <%- include('../Partials/Cliente_li', {cliente:cliente}); %>
+
+        <li> Cuenta: <select  onchange="Mostrar_Estado()"  name="cb_cue_est" id="cb_cu_es"> <option value="Seleccione_est" id="opt_sel_est">--SELECCIONE--</option> <% cuentas.forEach(cu =>  { %> <option value="<%= cu.Numero_cuenta %>"><%= cu.Numero_cuenta %></option> <% }) %> </select>    </li>
+
+        </ul>
+
+        
+
+        
+
+        <div id="contenedor_tab_est">
+
+           
+
+         
+            
+            
+
+        </div>
+
+        <div id="contenedor_tab_est_ben">
+
+
+        </div>
+
+
+      
+        
+
+        <script>
+
+           async function Mostrar_Estado(){
+
+                let contenedor = document.getElementById('contenedor_tab_est');
+                let contenedor_ben = document.getElementById('contenedor_tab_est_ben');
+                const cuenta_seleccionada = document.getElementById('cb_cu_es').value; 
+                
+                if(cuenta_seleccionada === "Seleccione_est"){
+
+                    contenedor.innerHTML = "";
+                    contenedor_ben.innerHTML = "";
+                
+                }else{
+
+                    try{
+
+                        const response = await fetch('/estado/api-estado-cuenta',{
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+
+                        body: JSON.stringify({cuenta: cuenta_seleccionada})
+                        
+
+
+                        });
+
+                        const data = await response.json();
+
+                        if(data.filtro_estado.length > 0){
+
+                            
+                            
+
+                            let tabla = '<h1><label for="">Transacciones del cliente</label></h1>';
+
+                            tabla += ' <br>';
+                            
+                            
+
+                            tabla += ' <table border="1">';
+                                
+                             tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td> </tr>';   
+                             
+                             data.filtro_estado.forEach(e => {
+                                
+                                let fecha = new Date(e.fecha);
+
+                                let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                                tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td> <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>   </tr>';
+                                
+
+                            }); tabla += '</table>';
+
+                            tabla += '<br>';
+
+                            tabla += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                             tabla += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes" onchange="Mostrar_Estado_Filtro_Mes()">';
+
+
+                            contenedor.innerHTML = tabla;
+
+
+                        }else{
+                            contenedor.innerHTML = "No existen resultados";
+                        }
+
+                        
+                        if(data.filtro_estado_beneficiario.length > 0){
+
+                            
+                            
+
+                            let tabla = '<h1><label for="">Transacciones recibidas del cliente</label></h1>';
+
+                            tabla += ' <br>';
+
+
+
+                            tabla += ' <table border="1">';
+    
+                            tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td><td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>  </tr>';   
+ 
+                            data.filtro_estado_beneficiario.forEach(e => {
+    
+                            let fecha = new Date(e.fecha);
+
+                            let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                            tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td>  <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>      </tr>';
+    
+
+                        }); tabla += '</table>';
+
+                       
+
+                        contenedor_ben.innerHTML = tabla;
+
+
+                        }else{
+                        contenedor_ben.innerHTML = "";
+                        }
+
+                    }catch(err){
+
+                        console.log("error fetch Estado:" + err);
+                    }
+
+                    
+                }
+
+
+            }
+
+           
+            async function Mostrar_Estado_Filtro_Fecha(){
+
+                let contenedor = document.getElementById('contenedor_tab_est');
+                let contenedor_ben = document.getElementById('contenedor_tab_est_ben');
+                const cuenta_seleccionada = document.getElementById('cb_cu_es').value; 
+                const fecha_seleccionada = document.getElementById('tx_fec').value;
+
+                
+                try{
+
+                    const response = await fetch('/estado/api-estado-cuenta-filtro-fecha',{
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+
+                    body: JSON.stringify({cuenta: cuenta_seleccionada, fecha: fecha_seleccionada})
+        
+
+
+                    });
+
+                    const data = await response.json();
+
+                    if(data.filtro_estado.length > 0){
+
+            
+            
+
+                    let tabla = '<h1><label for="">Transacciones del cliente</label></h1>';
+
+                    tabla += ' <br>';
+            
+            
+
+                    tabla += ' <table border="1">';
+                
+                    tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td> </tr>';   
+             
+                    data.filtro_estado.forEach(e => {
+                
+                    let fecha = new Date(e.fecha);
+
+                    let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                    tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td> <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>    </tr>';
+                
+
+                    }); tabla += '</table>';
+
+                    tabla += '<br>';
+
+                    tabla += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                    tabla += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes"  onchange="Mostrar_Estado_Filtro_Mes()">';
+
+
+                    contenedor.innerHTML = tabla;
+
+
+                    }else{
+
+                        if(data.filtro_estado_beneficiario.length > 0){
+
+                            let vacio = "";
+                            vacio += '<br>';
+                            vacio += '<br>';
+
+                            vacio += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                            vacio += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes"  onchange="Mostrar_Estado_Filtro_Mes()">';
+                            contenedor.innerHTML = vacio;
+
+                        }else{
+
+                             let vacio = '<label for="">no existen resultados</label>';
+
+                             vacio += '<br>';
+                             vacio += '<br>';
+
+                             vacio += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                             vacio += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes"  onchange="Mostrar_Estado_Filtro_Mes()">';
+                             contenedor.innerHTML = vacio;
+
+                        }
+
+                   
+                    
+                
+                    }
+
+                    if(data.filtro_estado_beneficiario.length > 0){
+
+            
+            
+
+                    let tabla = '<h1><label for="">Transacciones recibidas del cliente</label></h1>';
+
+                    tabla += ' <br>';
+            
+            
+
+                    tabla += ' <table border="1">';
+                
+                    tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td> </tr>';   
+             
+                    data.filtro_estado_beneficiario.forEach(e => {
+                
+                    let fecha = new Date(e.fecha);
+
+                    let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                    tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td>  <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>   </tr>';
+                
+
+                    }); tabla += '</table>';
+
+                    
+                    contenedor_ben.innerHTML = tabla;
+
+
+                    }else{
+
+                   
+                    contenedor_ben.innerHTML = "";
+                    
+                
+                    }
+                    }catch(err){
+
+                        console.log("error fetch Estado:" + err);
+                    }
+
+    
+                
+
+
+            }
+
+            async function Mostrar_Estado_Filtro_Mes(){
+
+                let contenedor = document.getElementById('contenedor_tab_est');
+                let contenedor_ben = document.getElementById('contenedor_tab_est_ben');
+                const cuenta_seleccionada = document.getElementById('cb_cu_es').value; 
+                const fecha_seleccionada = document.getElementById('tx_mes').value;
+
+
+                try{
+
+                    const response = await fetch('/estado/api-estado-cuenta-filtro-mes',{
+
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type' : 'application/json'
+                    },
+
+                    body: JSON.stringify({cuenta: cuenta_seleccionada, fecha: fecha_seleccionada})
+
+
+
+                    });
+
+                    const data = await response.json();
+
+                    if(data.filtro_estado.length > 0){
+
+
+
+
+                    let tabla = '<h1><label for="">Transacciones  recibidas del cliente</label></h1>';
+
+                    tabla += ' <br>';
+
+
+
+                    tabla += ' <table border="1">';
+
+                    tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td> </tr>';   
+
+                    data.filtro_estado.forEach(e => {
+
+                    let fecha = new Date(e.fecha);
+
+                    let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                    tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td>   <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>  </tr>';
+
+
+                    }); tabla += '</table>';
+
+                    tabla += '<br>';
+
+                    tabla += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                    tabla += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes" onchange="Mostrar_Estado_Filtro_Mes()">';
+
+
+                    contenedor.innerHTML = tabla;
+
+
+                    }else{
+
+                        if(data.filtro_estado_beneficiario.length > 0){
+
+                            let vacio = '';
+
+                            vacio += '<br>';
+                            vacio += '<br>';
+
+                            vacio += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                            vacio += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes"  onchange="Mostrar_Estado_Filtro_Mes()">';
+                            contenedor.innerHTML = vacio;
+
+
+                        }else{
+                            let vacio = '<label for="">no existen resultados</label>';
+
+                            vacio += '<br>';
+                            vacio += '<br>';
+
+                            vacio += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                            vacio += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes"  onchange="Mostrar_Estado_Filtro_Mes()">';
+                            contenedor.innerHTML = vacio;
+                        }
+
+                    
+    
+
+                }
+                if(data.filtro_estado_beneficiario.length > 0){
+
+
+
+
+                    let tabla = '<h1><label for="">Transacciones del cliente</label></h1>';
+
+                    tabla += ' <br>';
+
+
+
+                    tabla += ' <table border="1">';
+
+                    tabla +=  '<tr> <td>fecha</td> <td>hora</td> <td>cantidad</td> <td>remitente</td> <td>cuenta del remitente</td> <td>beneficiario</td> <td>cuenta del beneficiario</td> </tr>';   
+
+                    data.filtro_estado_beneficiario.forEach(e => {
+
+                    let fecha = new Date(e.fecha);
+
+                    let fecha_formateada = fecha.toLocaleDateString('es-ES');
+                    tabla += '<tr> <td>' + fecha_formateada + '</td> <td>' + e.hora + '</td> <td>' + e.cantidad + '</td> <td>' + e.remitente + '</td> <td>' + e.cue_rem + '</td> <td>' + e.beneficiario + '</td><td>' + e.cue_ben + '</td>  <td>  <button  value="' + e.id + '"  onclick="Descargar_pdf(this)">Descargar pdf</button> </td>   </tr>';
+
+
+                    }); tabla += '</table>';
+
+                    tabla += '<br>';
+
+                    tabla += '<label for="">Filtrar por fecha:</label> <input type="date" name="txt_fecha" id="tx_fec" onchange="Mostrar_Estado_Filtro_Fecha()">';
+                    tabla += '<label for="">Filtrar por Mes:</label> <input type="month" name="txt_mes" id="tx_mes" onchange="Mostrar_Estado_Filtro_Mes()">';
+
+
+                    contenedor_ben.innerHTML = tabla;
+
+
+                    }else{
+
+                        contenedor_ben.innerHTML = "";
+
+                    
+    
+
+                }
+
+
+            }catch(err){
+
+                console.log("error fetch Estado:" + err);
+            }
+
+
+
+
+
+        }
+
+
+
+
+        async function Descargar_pdf(btn){
+
+            const id = btn.value;
+
+
+            try{
+
+                const response =  await fetch('/estado/api-pdf', 
+            {
+                method: 'POST',
+                headers: {
+
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify({id_pdf:id})
+
+            });
+
+            if (response.ok) {
+                
+            
+                 window.location.href = "/estado/factura";
+
+            } else {
+            console.error('Error al generar el PDF:', response.statusText);
+        }
+
+
+
+            }catch(err){
+
+                console.log("error fetch" + err);
+            }
+
+           
+            
+
+
+        }
+
+
+        </script>
+    
+      
+
+      
+
+</form>
+
+</body>
+
+</html>

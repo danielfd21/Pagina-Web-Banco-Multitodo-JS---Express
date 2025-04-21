@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   
+
+    <script>
+
+
+     window.addEventListener('pageshow',function(event){
+
+
+        if(event.persisted){
+
+            location.reload();
+
+
+        }
+
+        
+     });
+
+        
+     function Mostrar_pdf(){
+
+        window.location.href = "/transaccion/pdf";
+
+     }
+
+
+     function Imprimir_comprobante(){
+
+        window.location.href = "/transaccion/imprimir-comprobante";
+     }
+     
+
+
+    </script>
+
+<h1> TRANSACCION REALIZADA CON EXITO</h1>
+
+
+<br> <br>
+
+<label for="">Descargar comprobante</label> <br> <br>
+
+
+<button type="button" id="btn_descargar_pdf" onclick="Mostrar_pdf()">Descargar pdf </button>
+
+
+
+<button type="button" onclick="Imprimir_comprobante()" id="btn_enviar_imprimir">Imprimir Comprobante</button>
+
+<style>
+
+@media print{
+
+    #btn_imp{
+
+        display: none;
+    }
+
+}
+
+
+
+</style>
+
+
+
+</body>
+</html>

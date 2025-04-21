@@ -1,0 +1,8 @@
+@media print{
+
+    #btn_imp_com {
+
+        display: none;
+    }
+
+}

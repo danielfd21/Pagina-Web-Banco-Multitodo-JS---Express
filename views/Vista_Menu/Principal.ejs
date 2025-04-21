@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+    
+    <script>
+
+        function Redirigir(id){
+
+            if(id === "btn_tra"){
+
+                window.location.href = "/transaccion";
+
+            }
+
+            if(id === "btn_est"){
+                
+                window.location.href = "/estado";
+            }
+            
+
+
+        }
+
+
+        window.addEventListener('pageshow',function(event){
+
+            if(event.persisted){
+
+                location.reload();
+            }
+
+
+        });
+
+
+    </script>
+
+
+        <img src="" alt="logo.png">
+
+        <br>
+        <br>
+
+        <button onclick="Redirigir('btn_tra')" id="btn_tra">Transacción</button><br> <br><br>
+
+        <button onclick="Redirigir('btn_est')" id="btn_est">Consultar Estado de Cuenta</button>
+
+        
+
+</body>
+</html>
